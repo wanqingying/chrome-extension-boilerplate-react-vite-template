@@ -1,44 +1,45 @@
 import '@src/SidePanel.css';
-import { useStorage, withErrorBoundary, withSuspense } from '@extension/shared';
+import { withErrorBoundary, withSuspense } from '@extension/shared';
 import { exampleThemeStorage } from '@extension/storage';
-import type { ComponentPropsWithoutRef } from 'react';
+import { Toaster } from '@/components/ui/toaster';
+import { TodoList } from '@/components/TodoList';
 
-const SidePanel = () => {
-  const theme = useStorage(exampleThemeStorage);
-  const isLight = theme === 'light';
-  const logo = isLight ? 'side-panel/logo_vertical.svg' : 'side-panel/logo_vertical_dark.svg';
-  const goGithubSite = () =>
-    chrome.tabs.create({ url: 'https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite' });
+import { ChatInputText } from './pages/chat/components/ChatInputText';
+import React, { useEffect } from 'react';
 
+const AppSidePanel = () => {
+  // 监听系统主题变化
+  useEffect(() => {
+    // 检查系统是否处于暗色模式
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const lightModeMediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+
+    const handleThemeChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      console.log('handleThemeChange', e);
+      document.documentElement.classList.toggle('dark', e.matches);
+      document.documentElement.classList.toggle('light', lightModeMediaQuery.matches);
+    };
+
+    // 初始化主题
+    handleThemeChange(darkModeMediaQuery);
+
+    // 监听系统主题变化
+    darkModeMediaQuery.addEventListener('change', handleThemeChange);
+
+    return () => {
+      darkModeMediaQuery.removeEventListener('change', handleThemeChange);
+    };
+  }, []);
   return (
-    <div className={`App ${isLight ? 'bg-slate-50' : 'bg-gray-800'}`}>
-      <header className={`App-header ${isLight ? 'text-gray-900' : 'text-gray-100'}`}>
-        <button onClick={goGithubSite}>
-          <img src={chrome.runtime.getURL(logo)} className="App-logo" alt="logo" />
-        </button>
-        <p>
-          Edit <code>pages/side-panel/src/SidePanel.tsx</code>
-        </p>
-        <ToggleButton>Toggle theme</ToggleButton>
-      </header>
+    <div className={`relative flex h-screen flex-col bg-slate-100 p-1 overflow-hidden`}>
+      <div className='text-white bg-blue-500 p-2'>
+        start demo
+      </div>
+      <TodoList />
+      <ChatInputText className={'h-full flex-1 rounded-xl bg-white'} />
+      <Toaster />
     </div>
   );
 };
 
-const ToggleButton = (props: ComponentPropsWithoutRef<'button'>) => {
-  const theme = useStorage(exampleThemeStorage);
-  return (
-    <button
-      className={
-        props.className +
-        ' ' +
-        'font-bold mt-4 py-1 px-4 rounded shadow hover:scale-105 ' +
-        (theme === 'light' ? 'bg-white text-black' : 'bg-black text-white')
-      }
-      onClick={exampleThemeStorage.toggle}>
-      {props.children}
-    </button>
-  );
-};
-
-export default withErrorBoundary(withSuspense(SidePanel, <div> Loading ... </div>), <div> Error Occur </div>);
+export default withErrorBoundary(withSuspense(AppSidePanel, <div> Loading ... </div>), <div> Error Occur </div>);

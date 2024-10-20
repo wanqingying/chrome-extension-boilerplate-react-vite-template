@@ -3,6 +3,7 @@ import { watchRebuildPlugin } from '@extension/hmr';
 import react from '@vitejs/plugin-react-swc';
 import deepmerge from 'deepmerge';
 import { isDev, isProduction } from './env.mjs';
+import svgr from 'vite-plugin-svgr';
 
 export const watchOption = isDev
   ? {
@@ -23,7 +24,7 @@ export function withPageConfig(config) {
     deepmerge(
       {
         base: '',
-        plugins: [react(), isDev && watchRebuildPlugin({ refresh: true })],
+        plugins: [react(), isDev && watchRebuildPlugin({ refresh: true }), svgr()],
         build: {
           sourcemap: isDev,
           minify: isProduction,

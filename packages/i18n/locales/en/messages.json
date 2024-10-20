@@ -1,11 +1,11 @@
 {
   "extensionDescription": {
-    "description": "Extension description",
-    "message": "Chrome extension boilerplate developed with Vite, React and Typescript"
+    "description": "AiToolKit",
+    "message": "AiToolKit is a Chrome extension that provides a set of tools"
   },
   "extensionName": {
-    "description": "Extension name",
-    "message": "Chrome extension boilerplate"
+    "description": "AiToolKit",
+    "message": "AiToolKit Site"
   },
   "toggleTheme": {
     "message": "Toggle theme"
